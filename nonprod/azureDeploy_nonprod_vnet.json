@@ -1,0 +1,404 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "vNetParameters": {
+        "type": "object",
+        "defaultValue": {
+            "vNetName": "auenpdvnet01",
+            "Prefixes": "10.0.96.0/19",
+            "subnets":[
+                {
+                "SubnetName": "auenpddevsnt2",
+                "Prefixes": "10.0.98.0/23",
+                "NetworkSecurityGroup": "auenpddevnsg2",
+                "UDRName": "auenpdudr2",
+                "NSGRules": 
+                  [
+                    {
+                      "RuleName": "DenyOutbound",
+                      "Description": "-",
+                      "Priority": 4092,
+                      "SourceAddressPrefix": "10.0.0.0/16",
+                      "DestinationAddressPrefix": "10.0.0.0/16",
+                      "DestinationPortRange": ["1-65535"],
+                      "Protocol": "*",
+                      "Access": "Deny",
+                      "Direction": "Outbound",
+                      "SourcePortRange": "*"
+                    },
+                    {
+                      "RuleName": "AllowDevOutbound",
+                      "Description": "-",
+                      "Priority": 4091,
+                      "SourceAddressPrefix": "10.0.98.0/23",
+                      "DestinationAddressPrefix": "10.0.98.0/23",
+                      "DestinationPortRange": ["1-65535"],
+                      "Protocol": "*",
+                      "Access": "Allow",
+                      "Direction": "Outbound",
+                      "SourcePortRange": "*"
+                    }
+                    ,
+                    {
+                      "RuleName": "AllowClientToDC",
+                      "Description": "-",
+                      "Priority": 3500,
+                      "SourceAddressPrefix": "VirtualNetwork",
+                      "DestinationAddressPrefix": "10.0.4.0/23",
+                      "DestinationPortRange": ["53","88","123","135","137","138","139","389","445","464","636","3268","3269","49152-65535"],
+                      "Protocol": "*",
+                      "Access": "Allow",
+                      "Direction": "Outbound",
+                      "SourcePortRange": "*"
+                    }
+                  ]
+                },
+                {
+                "SubnetName": "auenpdtstsnt3",
+                "Prefixes": "10.0.100.0/23",
+                "NetworkSecurityGroup": "auenpdtstnsg3",
+                "UDRName": "auenpdudr3",
+                "NSGRules": 
+                  [
+                    {
+                      "RuleName": "DenyOutbound",
+                      "Description": "-",
+                      "Priority": 4092,
+                      "SourceAddressPrefix": "10.0.0.0/16",
+                      "DestinationAddressPrefix": "10.0.0.0/16",
+                      "DestinationPortRange": ["1-65535"],
+                      "Protocol": "*",
+                      "Access": "Deny",
+                      "Direction": "Outbound",
+                      "SourcePortRange": "*"
+                    },
+                    {
+                      "RuleName": "AllowUATOutbound",
+                      "Description": "-",
+                      "Priority": 4091,
+                      "SourceAddressPrefix": "10.0.100.0/23",
+                      "DestinationAddressPrefix": "10.0.100.0/23",
+                      "DestinationPortRange": ["1-65535"],
+                      "Protocol": "*",
+                      "Access": "Allow",
+                      "Direction": "Outbound",
+                      "SourcePortRange": "*"
+                    }
+                    ,
+                    {
+                      "RuleName": "AllowClientToDC",
+                      "Description": "-",
+                      "Priority": 3500,
+                      "SourceAddressPrefix": "VirtualNetwork",
+                      "DestinationAddressPrefix": "10.0.4.0/23",
+                      "DestinationPortRange": ["53","88","123","135","137","138","139","389","445","464","636","3268","3269","49152-65535"],
+                      "Protocol": "*",
+                      "Access": "Allow",
+                      "Direction": "Outbound",
+                      "SourcePortRange": "*"
+                    }
+                  ]
+                },
+                {
+                "SubnetName": "auenpdsdxsnt4",
+                "Prefixes": "10.0.102.0/23",
+                "NetworkSecurityGroup": "auenpdsdxnsg4",
+                "UDRName": "auenpdudr4",
+                "NSGRules": 
+                  [
+                    {
+                      "RuleName": "DenyOutbound",
+                      "Description": "-",
+                      "Priority": 4092,
+                      "SourceAddressPrefix": "10.0.0.0/16",
+                      "DestinationAddressPrefix": "10.0.0.0/16",
+                      "DestinationPortRange": ["1-65535"],
+                      "Protocol": "*",
+                      "Access": "Deny",
+                      "Direction": "Outbound",
+                      "SourcePortRange": "*"
+                    },
+                    {
+                      "RuleName": "AllowSBXOutbound",
+                      "Description": "-",
+                      "Priority": 4091,
+                      "SourceAddressPrefix": "10.0.102.0/23",
+                      "DestinationAddressPrefix": "10.0.102.0/23",
+                      "DestinationPortRange": ["1-65535"],
+                      "Protocol": "*",
+                      "Access": "Allow",
+                      "Direction": "Outbound",
+                      "SourcePortRange": "*"
+                    },
+                    {
+                      "RuleName": "AllowClientToDC",
+                      "Description": "-",
+                      "Priority": 3500,
+                      "SourceAddressPrefix": "VirtualNetwork",
+                      "DestinationAddressPrefix": "10.0.4.0/23",
+                      "DestinationPortRange": ["53","88","123","135","137","138","139","389","445","464","636","3268","3269","49152-65535"],
+                      "Protocol": "*",
+                      "Access": "Allow",
+                      "Direction": "Outbound",
+                      "SourcePortRange": "*"
+                    }
+                  ]
+                }
+              ]
+            }
+    },
+     "pipNames": {
+      "type": "array",
+      "defaultValue": [
+        "auenpdbtnpip01",
+        "auenpdnatpip02"
+      ]
+    },
+      "NatGateway" :{
+      "type": "object",
+      "defaultValue": {
+        "name": "auenpdnat01",
+        "natpip" :"auenpdnatpip02"
+      }
+    },
+      "vnetVault": {
+      "type": "object",
+      "defaultValue": {
+        "vaultname": "aenpdvault01"
+      }
+    },
+    "UdrNonProdvNet": {
+      "type": "array",
+      "defaultValue":[
+            "auenpdudr2",
+            "auenpdudr3",
+            "auenpdudr4"
+      ]
+    },
+    "vnetNonProdBastion": {
+      "type": "object",
+      "defaultValue": {
+          "bastionHostName": "auenpdbtn01",
+          "bastionpip": "auenpdbtnpip01",
+          "SubnetName": "AzureBastionSubnet",
+          "Prefixes": "10.0.96.0/26"
+        }
+      }
+    },
+    "variables": {
+      "subnets" : "[parameters('vNetParameters').subnets]"
+    },
+    "resources": [
+        {
+            "condition": "[not(equals(length(variables('subnets')[copyIndex(0)].NSGRules),0))]",
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "name": "[variables('subnets')[copyIndex(0)].NetworkSecurityGroup]",
+            "location": "[resourceGroup().location]",
+            "apiVersion": "2019-11-01",
+            "copy": {
+                "name": "SubnetNSGLoop",
+                "count": "[length( variables('subnets') )]"
+            },
+            "properties": {
+                "copy": [
+                    {
+                        "name": "securityRules",
+                        "count": "[length(variables('subnets')[copyIndex(0)].NSGRules)]",
+                        "input": {
+                            "name": "[variables('subnets')[copyIndex(0)].NSGRules[copyIndex('securityRules')].RuleName]",
+                            "properties": {
+                                "description": "[variables('subnets')[copyIndex(0)].NSGRules[copyIndex('securityRules')].Description]",
+                                "protocol": "[variables('subnets')[copyIndex(0)].NSGRules[copyIndex('securityRules')].Protocol]",
+                                "sourceAddressPrefix": "[variables('subnets')[copyIndex(0)].NSGRules[copyIndex('securityRules')].SourceAddressPrefix]",
+                                "destinationAddressPrefix": "[variables('subnets')[copyIndex(0)].NSGRules[copyIndex('securityRules')].DestinationAddressPrefix]",
+                                "access": "[variables('subnets')[copyIndex(0)].NSGRules[copyIndex('securityRules')].Access]",
+                                "priority": "[variables('subnets')[copyIndex(0)].NSGRules[copyIndex('securityRules')].Priority]",
+                                "direction": "[variables('subnets')[copyIndex(0)].NSGRules[copyIndex('securityRules')].Direction]",
+                                "sourcePortRange": "[variables('subnets')[copyIndex(0)].NSGRules[copyIndex('securityRules')].SourcePortRange]",
+                                "destinationPortRanges": "[variables('subnets')[copyIndex(0)].NSGRules[copyIndex('securityRules')].DestinationPortRange]"
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        {
+		        "type": "Microsoft.Network/routeTables",
+            "apiVersion": "2018-10-01",
+		        "name": "[parameters('UdrNonProdvNet')[copyIndex()]]",
+            "location": "[resourceGroup().location]",            
+            "copy": {
+                "name": "UDRcopy",
+                "count": 
+                    "[length(parameters('UdrNonProdvNet'))]"
+                    },
+		        "properties": {
+			          "disableBgpRoutePropagation": false
+		                }
+        },
+        {          
+          "type": "Microsoft.Network/virtualNetworks",
+          "apiVersion": "2019-04-01",
+          "name": "[parameters('vNetParameters').vNetName]",
+          "location": "[resourceGroup().location]",
+          "dependsOn": [
+              "SubnetNSGLoop",
+              "UDRcopy",
+              "[resourceId('Microsoft.Network/natGateways', parameters('NatGateway').name)]"
+            ],
+          "properties": {
+            "addressSpace": {
+              "addressPrefixes": [
+                "[parameters('vNetParameters').Prefixes]"
+              ]
+            },
+            "copy": [
+              {
+                "name": "subnets",
+                "count": "[length(parameters('vNetParameters').subnets)]",
+                "input": {
+                  "name": "[parameters('vNetParameters').subnets[copyIndex('subnets')].SubnetName]",
+                  "properties": {
+                    "addressPrefix": "[parameters('vNetParameters').subnets[copyIndex('subnets')].Prefixes]",
+                    "networkSecurityGroup": {                      
+                      "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('vNetParameters').subnets[copyIndex('subnets')].NetworkSecurityGroup)]" 
+                    },
+                    "routeTable": {
+                      "id": "[resourceId('Microsoft.Network/routeTables', parameters('vNetParameters').subnets[copyIndex('subnets')].UDRName)]"
+                    },
+                  "serviceEndpoints": [
+                      {
+                          "service": "Microsoft.AzureActiveDirectory"
+                      },
+                      { 
+                          "service": "Microsoft.AzureCosmosDB"
+                      },
+                      {
+                          "service": "Microsoft.CognitiveServices"
+                      },
+                      {
+                          "service": "Microsoft.ContainerRegistry"
+                      },
+                      {
+                          "service": "Microsoft.EventHub"
+                      },
+                      {
+                          "service": "Microsoft.KeyVault"
+                      },
+                      {
+                          "service": "Microsoft.ServiceBus"
+                      },
+                      {
+                          "service": "Microsoft.Sql"
+                      },
+                      {
+                          "service": "Microsoft.Storage"
+                      },
+                      {
+                          "service": "Microsoft.Web"
+                      }
+                    ],
+                  "natGateway": 
+                    {
+                      "id": "[resourceId('Microsoft.Network/natGateways/', parameters('NatGateway').name)]"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "resources": [
+            {
+              "apiVersion": "2018-10-01",
+              "type": "subnets",
+              "name": "[parameters('vnetNonProdBastion').SubnetName]",
+              "location": "[resourceGroup().location]",
+              "dependsOn": [
+                "[parameters('vNetParameters').vNetName]"
+              ],
+              "properties": {
+                "addressPrefix": "[parameters('vnetNonProdBastion').Prefixes]"
+              }
+            }
+          ]
+      },
+      {
+            "type": "Microsoft.RecoveryServices/vaults",
+            "apiVersion": "2018-01-10",
+            "name": "[parameters('vnetVault').vaultname]",
+            "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "RS0",
+                "tier": "Standard"
+              },
+            "properties": {}
+      },
+      {
+            "type": "Microsoft.Network/natGateways",
+            "apiVersion": "2019-09-01",
+            "name": "[parameters('NatGateway').name]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/publicIPAddresses', parameters('NatGateway').natpip)]"
+            ],
+            "tags": {},
+            "sku": {
+                "name": "Standard"
+            },
+            "zones": [],
+            "properties": {
+                "publicIPAddresses": [
+                    {
+                        "id": "[resourceId('Microsoft.Network/publicIpAddresses/', parameters('NatGateway').natpip)]"
+                    }
+                ],
+                "publicIPPrefixes": [],
+                "idleTimeoutInMinutes": 4
+            }
+        },
+      {
+            "type": "Microsoft.Network/publicIPAddresses",
+            "apiVersion": "2018-10-01",
+            "name": "[parameters('pipNames')[copyIndex()]]",
+            "location": "[resourceGroup().location]",
+            "copy": {
+              "name": "pipCopy",
+              "count": "[length(parameters('pipNames'))]"
+            },
+            "sku": {
+              "name": "Standard"
+            },
+            "properties": {
+              "publicIPAllocationMethod": "static"
+            }
+        },
+      {
+          "apiVersion": "2019-04-01",
+          "type": "Microsoft.Network/bastionHosts",
+          "name": "[parameters('vnetNonProdBastion').bastionHostName]",
+          "location": "[resourceGroup().location]",
+          "dependsOn": [
+            "[resourceId('Microsoft.Network/publicIpAddresses', parameters('vnetNonProdBastion').bastionpip)]",
+            "[resourceId('Microsoft.Network/virtualNetworks', parameters('vNetParameters').vNetName)]"
+            ],
+          "properties": {
+            "ipConfigurations": [
+              {
+                "name": "IpConf01",
+                "properties": {
+                  "subnet": {
+                    "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vNetParameters').vNetName, parameters('vnetNonProdBastion').SubnetName)]"
+                  },
+                  "publicIPAddress": {
+                    "id": "[resourceId('Microsoft.Network/publicIpAddresses', parameters('vnetNonProdBastion').bastionpip)]"
+                  }
+                }
+              }
+            ]
+      },
+      "tags": {}
+    }
+    ],
+    "outputs": {}
+}

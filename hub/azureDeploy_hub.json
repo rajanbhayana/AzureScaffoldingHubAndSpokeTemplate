@@ -1,0 +1,763 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "vnetHub": {
+      "type": "object",
+      "defaultValue": {
+        "vNetName": "auehubvnet01",
+        "Prefixes": "10.0.0.0/19",
+        "RGName": "auehubrsg01",        
+        "subnets": [
+          {
+            "SubnetName": "auehubshdsnt2",
+            "Prefixes": "10.0.1.0/24",
+            "NetworkSecurityGroup": "auehubshdnsg2",
+            "UDRName": "auehubudr2",
+            "NSGRules": [
+              {
+                "RuleName": "DenyOutbound",
+                "Description": "-",
+                "Priority": 4092,
+                "SourceAddressPrefix": "10.0.0.0/16",
+                "DestinationAddressPrefix": "10.0.0.0/16",
+                "DestinationPortRange": ["1-65535"],
+                "Protocol": "*",
+                "Access": "Deny",
+                "Direction": "Outbound",
+                "SourcePortRange": "*"
+              },
+              {
+                "RuleName": "AllowSubnetOutbound",
+                "Description": "-",
+                "Priority": 4091,
+                "SourceAddressPrefix": "10.0.1.0/24",
+                "DestinationAddressPrefix": "10.0.1.0/24",
+                "DestinationPortRange": ["1-65535"],
+                "Protocol": "*",
+                "Access": "Allow",
+                "Direction": "Outbound",
+                "SourcePortRange": "*"
+              },
+              {
+                "RuleName": "AllowClientToDC",
+                "Description": "-",
+                "Priority": 3500,
+                "SourceAddressPrefix": "VirtualNetwork",
+                "DestinationAddressPrefix": "10.0.4.0/23",
+                "DestinationPortRange": ["53","88","123","135","137","138","139","389","445","464","636","3268","3269","49152-65535"],
+                "Protocol": "*",
+                "Access": "Allow",
+                "Direction": "Outbound",
+                "SourcePortRange": "*"
+              }
+            ]
+          },
+          {
+            "SubnetName": "auehubshdsnt3",
+            "Prefixes": "10.0.2.0/23",
+            "NetworkSecurityGroup": "auehubshdnsg3",
+            "UDRName": "auehubudr3",
+            "NSGRules": [
+              {
+                "RuleName": "DenyOutbound",
+                "Description": "-",
+                "Priority": 4092,
+                "SourceAddressPrefix": "10.0.0.0/16",
+                "DestinationAddressPrefix": "10.0.0.0/16",
+                "DestinationPortRange": ["1-65535"],
+                "Protocol": "*",
+                "Access": "Deny",
+                "Direction": "Outbound",
+                "SourcePortRange": "*"
+              },
+              {
+                "RuleName": "AllowSubnetOutbound",
+                "Description": "-",
+                "Priority": 4091,
+                "SourceAddressPrefix": "10.0.2.0/23",
+                "DestinationAddressPrefix": "10.0.2.0/23",
+                "DestinationPortRange": ["1-65535"],
+                "Protocol": "*",
+                "Access": "Allow",
+                "Direction": "Outbound",
+                "SourcePortRange": "*"
+              },
+              {
+                "RuleName": "AllowClientToDC",
+                "Description": "-",
+                "Priority": 3500,
+                "SourceAddressPrefix": "VirtualNetwork",
+                "DestinationAddressPrefix": "10.0.4.0/23",
+                "DestinationPortRange": ["53","88","123","135","137","138","139","389","445","464","636","3268","3269","49152-65535"],
+                "Protocol": "*",
+                "Access": "Allow",
+                "Direction": "Outbound",
+                "SourcePortRange": "*"
+              }
+            ]
+          },
+          {
+            "SubnetName": "auehubshdsnt4",
+            "Prefixes": "10.0.4.0/23",
+            "NetworkSecurityGroup": "auehubshdnsg4",
+            "UDRName": "auehubudr4",
+            "NSGRules": [
+              {
+                "RuleName": "DenyOutbound",
+                "Description": "-",
+                "Priority": 4092,
+                "SourceAddressPrefix": "10.0.0.0/16",
+                "DestinationAddressPrefix": "10.0.0.0/16",
+                "DestinationPortRange": ["1-65535"],
+                "Protocol": "*",
+                "Access": "Deny",
+                "Direction": "Outbound",
+                "SourcePortRange": "*"
+              },
+              {
+                "RuleName": "AllowSubnetOutbound",
+                "Description": "-",
+                "Priority": 4091,
+                "SourceAddressPrefix": "10.0.4.0/23",
+                "DestinationAddressPrefix": "10.0.4.0/23",
+                "DestinationPortRange": ["1-65535"],
+                "Protocol": "*",
+                "Access": "Allow",
+                "Direction": "Outbound",
+                "SourcePortRange": "*"
+              }
+            ]
+          },
+          {
+            "SubnetName": "auehubagwsnt5",
+            "Prefixes": "10.0.0.128/26",
+            "NetworkSecurityGroup": "auehubagwnsg5",
+            "UDRName": "auehubudr5",
+            "NSGRules": [
+               {
+                "RuleName": "AllowInbound",
+                "Description": "-",
+                "Priority": 4090,
+                "SourceAddressPrefix": "*",
+                "DestinationAddressPrefix": "*",
+                "DestinationPortRange": ["65200-65535"],
+                "Protocol": "*",
+                "Access": "Allow",
+                "Direction": "Inbound",
+                "SourcePortRange": "*"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "vnetHubGatewaySubnet": {
+      "type": "object",
+      "defaultValue": {
+        "SubnetName": "GatewaySubnet",
+        "Prefixes": "10.0.0.0/26"
+      }
+    },
+    "vnetHubFirewallSubnet": {
+      "type": "object",
+      "defaultValue": {
+       "SubnetName": "AzureFirewallSubnet",
+        "Prefixes": "10.0.6.0/24"
+      }
+    },
+    "vnetHubAzureBastionSubnet": {
+      "type": "object",
+      "defaultValue": {
+       "SubnetName": "AzureBastionSubnet",
+       "Prefixes": "10.0.0.64/27"
+      }
+    },
+    "pipNames": {
+      "type": "array",
+      "defaultValue": [
+        "Auehubagwpip01",
+        "Auehubbaspip02",
+        "Auehubfwlpip03",
+        "auehubnatpip01"
+      ]
+    },
+    "NatGateway" :{
+      "type": "object",
+      "defaultValue": {
+        "name": "auehubnat01",
+        "natpip" :"auehubnatpip01"
+      }
+    },
+    "vnetHubVault": {
+      "type": "object",
+      "defaultValue": {
+        "vaultname": "aehubvault01"
+      }
+    },
+    "vnetHubworkspaces": {
+      "type": "object",
+      "defaultValue": {
+        "laname": "aehubla01",
+        "lasku": "pergb2018",
+        "lasearchVersion": "1"
+      }
+    },
+    "vnetHubAppGateway": {
+      "type": "object",
+      "defaultValue": {
+        "gwName": "aehubappgw01",
+        "gwpip": "Auehubagwpip01",
+        "gwSkuSize": "WAF_v2",
+        "AGWafPol01": "WafPol01"
+      }
+    },
+    "vnetHubFirewall": {
+      "type": "object",
+      "defaultValue": {
+        "fwName": "Aehubfwl01",
+        "fwlpip": "Auehubfwlpip03"
+      }
+    },
+    "UdrHubvNet": {
+      "type": "array",
+      "defaultValue":[
+            "auehubudr1",
+            "auehubudr2",
+            "auehubudr3",
+            "auehubudr4",
+            "auehubudr5"
+      ]
+    },
+    "vnetHubBastion": {
+      "type": "object",
+      "defaultValue": {
+        "bastionHostName": "auehubbtn01",
+        "bastionpip": "Auehubbaspip02"
+      }
+    },
+    "vnetHubvirtualNetworkGateways": {
+      "type": "object",
+      "defaultValue": {
+        "vgwName": "auehubvgw01",
+        "vgwpip": "Auehubvgwpip04",
+        "gwType": "ExpressRoute",
+        "gwsku": "HighPerformance"
+      }
+    },
+    "vnetHubExpressRouteCircuit": {
+      "type": "object",
+      "defaultValue": {
+        "ERName" :"auehubexr01",
+        "Peeringlocation" : "Sydney",
+        "bandwidthInMbps" : "50",
+        "serviceProviderName" : "Equinix",
+        "sku_tier" :"Standard",
+        "Sku_family" :"MeteredData"
+      }
+    }
+  },
+  "functions": [],
+  "variables": {
+    "subnets": "[parameters('vnetHub').subnets]"
+  },
+  "resources": [
+    {
+      "condition": "[not(equals(length(variables('subnets')[copyIndex(0)].NSGRules),0))]",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "name": "[variables('subnets')[copyIndex(0)].NetworkSecurityGroup]",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2019-11-01",
+      "copy": {
+        "name": "SubnetNSGLoop",
+        "count": "[length( variables('subnets') )]"
+      },
+      "properties": {
+        "copy": [
+          {
+            "name": "securityRules",
+            "count": "[length(variables('subnets')[copyIndex(0)].NSGRules)]",
+            "input": {
+              "name": "[variables('subnets')[copyIndex(0)].NSGRules[copyIndex('securityRules')].RuleName]",
+              "properties": {
+                "description": "[variables('subnets')[copyIndex(0)].NSGRules[copyIndex('securityRules')].Description]",
+                "protocol": "[variables('subnets')[copyIndex(0)].NSGRules[copyIndex('securityRules')].Protocol]",
+                "sourceAddressPrefix": "[variables('subnets')[copyIndex(0)].NSGRules[copyIndex('securityRules')].SourceAddressPrefix]",
+                "destinationAddressPrefix": "[variables('subnets')[copyIndex(0)].NSGRules[copyIndex('securityRules')].DestinationAddressPrefix]",
+                "access": "[variables('subnets')[copyIndex(0)].NSGRules[copyIndex('securityRules')].Access]",
+                "priority": "[variables('subnets')[copyIndex(0)].NSGRules[copyIndex('securityRules')].Priority]",
+                "direction": "[variables('subnets')[copyIndex(0)].NSGRules[copyIndex('securityRules')].Direction]",
+                "sourcePortRange": "[variables('subnets')[copyIndex(0)].NSGRules[copyIndex('securityRules')].SourcePortRange]",
+                "destinationPortRanges": "[variables('subnets')[copyIndex(0)].NSGRules[copyIndex('securityRules')].DestinationPortRange]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2019-04-01",
+      "name": "[parameters('vnetHub').vNetName]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "SubnetNSGLoop",
+        "UDRcopy",
+        "[resourceId('Microsoft.Network/natGateways', parameters('NatGateway').name)]"
+      ],
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "[parameters('vnetHub').Prefixes]"
+          ]
+        },
+        "copy": [
+          {
+            "name": "subnets",
+            "count": "[length(parameters('vnetHub').subnets)]",
+            "input": {
+              "name": "[parameters('vnetHub').subnets[copyIndex('subnets')].SubnetName]",
+              "properties": {
+                "addressPrefix": "[parameters('vnetHub').subnets[copyIndex('subnets')].Prefixes]",
+                "networkSecurityGroup": {                  
+                  "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('vnetHub').subnets[copyIndex('subnets')].NetworkSecurityGroup)]"
+                },
+                "routeTable": {
+                  "id": "[resourceId('Microsoft.Network/routeTables', parameters('vnetHub').subnets[copyIndex('subnets')].UDRName)]"
+                },
+              "serviceEndpoints": [
+                  {
+                      "service": "Microsoft.AzureActiveDirectory"
+                  },
+                  { 
+                      "service": "Microsoft.AzureCosmosDB"
+                  },
+                  {
+                      "service": "Microsoft.CognitiveServices"
+                  },
+                  {
+                      "service": "Microsoft.ContainerRegistry"
+                  },
+                  {
+                      "service": "Microsoft.EventHub"
+                  },
+                  {
+                      "service": "Microsoft.KeyVault"
+                  },
+                  {
+                      "service": "Microsoft.ServiceBus"
+                  },
+                  {
+                      "service": "Microsoft.Sql"
+                  },
+                  {
+                      "service": "Microsoft.Storage"
+                  },
+                  {
+                      "service": "Microsoft.Web"
+                  }
+                    ],
+                "natGateway": 
+                  {
+                    "id": "[resourceId('Microsoft.Network/natGateways/', parameters('NatGateway').name)]"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "resources": [
+        {
+          "apiVersion": "2019-04-01",
+          "type": "subnets",
+          "name": "[parameters('vnetHubGatewaySubnet').SubnetName]",
+          "location": "[resourceGroup().location]",
+          "dependsOn": [
+            "[parameters('vnetHub').vNetName]"
+          ],
+          "properties": {
+            "addressPrefix": "[parameters('vnetHubGatewaySubnet').Prefixes]"
+          }
+        },
+        {
+          "apiVersion": "2019-04-01",
+          "type": "subnets",
+          "name": "[parameters('vnetHubFirewallSubnet').SubnetName]",
+          "location": "[resourceGroup().location]",
+          "dependsOn": [
+            "[parameters('vnetHub').vNetName]"
+          ],
+          "properties": {
+            "addressPrefix": "[parameters('vnetHubFirewallSubnet').Prefixes]"
+          }
+        },
+        {
+          "apiVersion": "2019-04-01",
+          "type": "subnets",
+          "name": "[parameters('vnetHubAzureBastionSubnet').SubnetName]",
+          "location": "[resourceGroup().location]",
+          "dependsOn": [
+            "[parameters('vnetHub').vNetName]"
+          ],
+          "properties": {
+            "addressPrefix": "[parameters('vnetHubAzureBastionSubnet').Prefixes]"
+          }
+        }
+       ]
+    },
+    {
+		        "type": "Microsoft.Network/routeTables",
+            "apiVersion": "2018-10-01",
+		        "name": "[parameters('UdrHubvNet')[copyIndex()]]",
+            "location": "[resourceGroup().location]",
+            "copy": {
+                "name": "UDRcopy",
+                "count": 
+                    "[length(parameters('UdrHubvNet'))]"
+                    },
+		        "properties": {
+			          "disableBgpRoutePropagation": false
+		                }
+        },
+    {
+      "type": "Microsoft.RecoveryServices/vaults",
+      "apiVersion": "2018-01-10",
+      "name": "[parameters('vnetHubVault').vaultname]",
+      "location": "[resourceGroup().location]",
+      "sku": {
+        "name": "RS0",
+        "tier": "Standard"
+      },
+      "properties": {}
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "apiVersion": "2015-11-01-preview",
+      "name": "[parameters('vnetHubworkspaces').laname]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "sku": {
+          "name": "[parameters('vnetHubworkspaces').lasku]"
+        },
+        "features": {
+          "searchVersion": "[parameters('vnetHubworkspaces').lasearchVersion]"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Network/publicIPAddresses",
+      "apiVersion": "2018-10-01",
+      "name": "[parameters('pipNames')[copyIndex()]]",
+      "location": "[resourceGroup().location]",
+      "copy": {
+        "name": "pipCopy",
+        "count": "[length(parameters('pipNames'))]"
+      },
+      "sku": {
+        "name": "Standard"
+      },
+      "properties": {
+        "publicIPAllocationMethod": "static"
+      }
+    },
+    {
+      "type": "Microsoft.Network/publicIPAddresses",
+      "apiVersion": "2018-10-01",
+      "name": "[parameters('vnetHubvirtualNetworkGateways').vgwpip]",
+      "location": "[resourceGroup().location]",
+      "sku": {
+        "name": "Basic"
+      },
+      "properties": {
+        "publicIPAllocationMethod": "Dynamic"
+      }
+    },
+    {
+            "type": "Microsoft.Network/natGateways",
+            "apiVersion": "2019-09-01",
+            "name": "[parameters('NatGateway').name]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/publicIPAddresses', parameters('NatGateway').natpip)]"
+            ],
+            "tags": {},
+            "sku": {
+                "name": "Standard"
+            },
+            "zones": [],
+            "properties": {
+                "publicIPAddresses": [
+                    {
+                        "id": "[resourceId('Microsoft.Network/publicIpAddresses/', parameters('NatGateway').natpip)]"
+                    }
+                ],
+                "publicIPPrefixes": [],
+                "idleTimeoutInMinutes": 4
+            }
+    },
+    {
+      "type": "Microsoft.Network/applicationGateways",
+      "apiVersion": "2019-11-01",
+      "name": "[parameters('vnetHubAppGateway').gwName]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', parameters('vnetHub').vNetName)]",
+        "[resourceId('Microsoft.Network/publicIPAddresses', parameters('vnetHubAppGateway').gwpip)]",
+        "[resourceId('Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies', parameters('vnetHubAppGateway').AGWafPol01)]"
+      ],
+      "properties": {
+        "sku": {
+          "name": "WAF_v2",
+          "tier": "WAF_v2",
+          "capacity": 2
+        },
+        "gatewayIPConfigurations": [
+          {
+            "name": "appGatewayIpConfig",
+            "properties": {
+              "subnet": {
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetHub').vNetName, parameters('vnetHub').subnets[3].SubnetName)]"
+              }
+            }
+          }
+        ],
+        "frontendIPConfigurations": [
+          {
+            "name": "appGwPublicFrontendIp",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('vnetHubAppGateway').gwpip)]"
+              }
+            }
+          }
+        ],
+        "frontendPorts": [
+          {
+            "name": "port_80",
+            "properties": {
+              "port": 80
+            }
+          }
+        ],
+        "backendAddressPools": [
+          {
+            "name": "BackendPool01",
+            "properties": {}
+          }
+        ],
+        "backendHttpSettingsCollection": [
+          {
+            "name": "HTTPSetting01",
+            "properties": {
+              "port": 80,
+              "protocol": "Http",
+              "cookieBasedAffinity": "Disabled",
+              "pickHostNameFromBackendAddress": false,
+              "requestTimeout": 20
+            }
+          }
+        ],
+        "httpListeners": [
+          {
+            "name": "Listener01",
+            "properties": {
+              "firewallPolicy": {
+                "id": "[resourceId('Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies', parameters('vnetHubAppGateway').AGWafPol01)]"
+              },
+              "frontendIPConfiguration": {
+                "id": "[resourceId('Microsoft.Network/applicationGateways/frontendIPConfigurations', parameters('vnetHubAppGateway').gwName, 'appGwPublicFrontendIp')]"
+              },
+              "frontendPort": {
+                "id": "[resourceId('Microsoft.Network/applicationGateways/frontendPorts', parameters('vnetHubAppGateway').gwName, 'port_80')]"
+              },
+              "protocol": "Http",
+              "requireServerNameIndication": false
+            }
+          }
+        ],
+        "requestRoutingRules": [
+          {
+            "name": "RoutingRule01",
+            "properties": {
+              "ruleType": "Basic",
+              "httpListener": {
+                "id": "[resourceId('Microsoft.Network/applicationGateways/httpListeners', parameters('vnetHubAppGateway').gwName, 'Listener01')]"
+              },
+              "backendAddressPool": {
+                "id": "[resourceId('Microsoft.Network/applicationGateways/backendAddressPools', parameters('vnetHubAppGateway').gwName, 'BackendPool01')]"
+              },
+              "backendHttpSettings": {
+                "id": "[resourceId('Microsoft.Network/applicationGateways/backendHttpSettingsCollection', parameters('vnetHubAppGateway').gwName, 'HTTPSetting01')]"
+              }
+            }
+          }
+        ],
+        "enableHttp2": false,
+        "webApplicationFirewallConfiguration": {
+          "enabled": true,
+          "firewallMode": "Prevention",
+          "ruleSetType": "OWASP",
+          "ruleSetVersion": "3.1",
+          "requestBodyCheck": true,
+          "maxRequestBodySizeInKb": 128,
+          "fileUploadLimitInMb": 100
+        },
+        "firewallPolicy": {
+          "id": "[resourceId('Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies', parameters('vnetHubAppGateway').AGWafPol01)]"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies",
+      "apiVersion": "2019-11-01",
+      "name": "[parameters('vnetHubAppGateway').AGWafPol01]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "customRules": [
+          {
+            "name": "Rule01",
+            "priority": 100,
+            "ruleType": "MatchRule",
+            "action": "Block",
+            "matchConditions": [
+              {
+                "matchVariables": [
+                  {
+                    "variableName": "RemoteAddr"
+                  }
+                ],
+                "operator": "IPMatch",
+                "negationConditon": true,
+                "matchValues": [
+                  "10.0.0.0/8"
+                ]
+              }
+            ]
+          }
+        ],
+        "policySettings": {
+          "requestBodyCheck": true,
+          "maxRequestBodySizeInKb": 128,
+          "fileUploadLimitInMb": 100,
+          "state": "Enabled",
+          "mode": "Prevention"
+        },
+        "managedRules": {
+          "managedRuleSets": [
+            {
+              "ruleSetType": "OWASP",
+              "ruleSetVersion": "3.1"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "apiVersion": "2019-04-01",
+      "type": "Microsoft.Network/bastionHosts",
+      "name": "[parameters('vnetHubBastion').bastionHostName]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/publicIpAddresses', parameters('vnetHubBastion').bastionpip)]",
+        "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetHub').vNetName, parameters('vnetHubAzureBastionSubnet').SubnetName)]"
+      ],
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "IpConf01",
+            "properties": {
+              "subnet": {
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetHub').vNetName, parameters('vnetHubAzureBastionSubnet').SubnetName)]"
+              },
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIpAddresses', parameters('vnetHubBastion').bastionpip)]"
+              }
+            }
+          }
+        ]
+      },
+      "tags": {}
+    },
+    {
+      "type": "Microsoft.Network/azureFirewalls",
+      "apiVersion": "2019-11-01",
+      "name": "[parameters('vnetHubFirewall').fwName]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetHub').vNetName , parameters('vnetHubFirewallSubnet').SubnetName)]",
+        "[resourceId('Microsoft.Network/publicIPAddresses', parameters('vnetHubFirewall').fwlpip)]"
+      ],
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig",
+            "properties": {
+              "subnet": {
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetHub').vNetName, parameters('vnetHubFirewallSubnet').SubnetName)]"
+              },
+              "publicIPAddress": {
+                "id": "[resourceID('Microsoft.Network/publicIPAddresses', parameters('vnetHubFirewall').fwlpip)]"
+              }
+            }
+          }
+        ],
+        "networkRuleCollections": [],
+        "applicationRuleCollections": [],
+        "natRuleCollections": []
+      }
+    },
+    {
+      "apiVersion": "2019-04-01",
+      "name": "[parameters('vnetHubvirtualNetworkGateways').vgwName]",
+      "type": "Microsoft.Network/virtualNetworkGateways",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetHub').vNetName, parameters('vnetHubGatewaySubnet').SubnetName)]",
+        "[resourceId('Microsoft.Network/publicIPAddresses', parameters('vnetHubvirtualNetworkGateways').vgwpip )]"
+      ],
+      "tags": {},
+      "properties": {
+        "gatewayType": "[parameters('vnetHubvirtualNetworkGateways').gwType]",
+        "ipConfigurations": [
+          {
+            "name": "default",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "subnet": {
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetHub').vNetName, parameters('vnetHubGatewaySubnet').SubnetName)]"
+              },
+              "publicIpAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('vnetHubvirtualNetworkGateways').vgwpip )]"
+              }
+            }
+          }
+        ],
+        "sku": {
+          "name": "[parameters('vnetHubvirtualNetworkGateways').gwsku]",
+          "tier": "[parameters('vnetHubvirtualNetworkGateways').gwsku]"
+        }
+      }
+    },
+    {
+		    "apiVersion": "2015-06-15",
+		    "type": "Microsoft.Network/expressRouteCircuits",
+		    "name": "[parameters('vnetHubExpressRouteCircuit').ERName]",
+		    "location": "[resourceGroup().location]",
+		    "sku": {
+		        "name": "[concat(parameters('vnetHubExpressRouteCircuit').sku_tier,'_', parameters('vnetHubExpressRouteCircuit').Sku_family)]",
+		        "tier": "[parameters('vnetHubExpressRouteCircuit').sku_tier]",
+		        "family": "[parameters('vnetHubExpressRouteCircuit').Sku_family]"
+		    },
+		    "properties": {
+		        "serviceProviderProperties": {
+		            "serviceProviderName": "[parameters('vnetHubExpressRouteCircuit').serviceProviderName]",
+		            "peeringLocation": "[parameters('vnetHubExpressRouteCircuit').Peeringlocation]",
+		            "bandwidthInMbps": "[parameters('vnetHubExpressRouteCircuit').bandwidthInMbps]"
+		        },
+		        "allowClassicOperations": "false"
+		    }
+		}
+ ],
+  "outputs": {}
+}
