@@ -1,3 +1,12 @@
+ARM validation status - 
+nonprod - [![Build Status](https://dev.azure.com/rajanbhayana/AzureScaffoldingHubAndSpokeTemplate/_apis/build/status/nonprod%20-%20AzureScaffoldingHubAndSpokeTemplate-CI?branchName=master)](https://dev.azure.com/rajanbhayana/AzureScaffoldingHubAndSpokeTemplate/_build/latest?definitionId=10&branchName=master)
+
+preprod - [![Build Status](https://dev.azure.com/rajanbhayana/AzureScaffoldingHubAndSpokeTemplate/_apis/build/status/preprod%20-%20AzureScaffoldingHubAndSpokeTemplate-CI?branchName=master)](https://dev.azure.com/rajanbhayana/AzureScaffoldingHubAndSpokeTemplate/_build/latest?definitionId=11&branchName=master)
+
+prod - [![Build Status](https://dev.azure.com/rajanbhayana/AzureScaffoldingHubAndSpokeTemplate/_apis/build/status/prod%20-%20AzureScaffoldingHubAndSpokeTemplate-CI?branchName=master)](https://dev.azure.com/rajanbhayana/AzureScaffoldingHubAndSpokeTemplate/_build/latest?definitionId=12&branchName=master)
+
+hub - [![Build Status](https://dev.azure.com/rajanbhayana/AzureScaffoldingHubAndSpokeTemplate/_apis/build/status/hub-AzureScaffoldingHubAndSpokeTemplate-CI?branchName=master)](https://dev.azure.com/rajanbhayana/AzureScaffoldingHubAndSpokeTemplate/_build/latest?definitionId=13&branchName=master)
+
 # AzureScaffoldingTemplate
 
 This Azure Scaffolding template deploys a ready and secure Azure environment ready for deployment of resources. 
