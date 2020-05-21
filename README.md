@@ -46,3 +46,7 @@ Once you have made the connections to subscriptions, you can dpeloy the ARM temp
 
 If you are not that keen and want to quickly test the scripts, use PowerShell file to rollout all 4 environments (coming soon)
 
+# Roadmap
+- script to deploy all templates without pipelines.
+- additional services beyond the base templates that may be helpful
+- setup azure pipelines for template validations
