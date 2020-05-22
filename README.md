@@ -45,7 +45,7 @@ So if for example. you decide to have 4 subscriptions, with one resource group f
 
 once you have created SPNs, you should note down the appID (username), Password and TenantId somewhere securely as they would be used ahead. 
 
-Now to dpeloy these templates there are 2 ways. One is the standard and recommended way to setup azure devops pipelines to deploy resources to the resource groups. 
+Now to deploy these templates there are 2 ways. One is the standard and recommended way to setup azure devops pipelines to deploy resources to the resource groups. 
 Inorder to do that, you need to follow the 2 steps below for each environment. You can also play around a bit and enable continous integration/deployment, which will make sure all the changes are validated and deployed straight away. 
 First, assuming you have a azure devops account (or just create one, its free to start with and enough for what we are doing here) you need to setup a connection to the resource group. On how to do that, follow the instructions here -
 https://azuredevopslabs.com/labs/devopsserver/azureserviceprincipal/
