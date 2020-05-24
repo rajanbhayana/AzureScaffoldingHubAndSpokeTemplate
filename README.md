@@ -51,11 +51,10 @@ First, assuming you have a azure devops account (or just create one, its free to
 https://azuredevopslabs.com/labs/devopsserver/azureserviceprincipal/
 
 Once you have made the connections to subscriptions, you can dpeloy the ARM templates to each environment you have a connection for by using the details here - https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/add-template-to-azure-pipelines
+Post this, use the rollout.ps1 script to setup peering. Make sure to comment out lines 35,41,47 and 53. They are for hub and spoke deployment and that has already been done using pipelines above.
 
-
-If you are not that keen and want to quickly test the scripts, use PowerShell file to rollout all 4 environments (coming soon)
+If you are not that keen and want to quickly test the scripts, use PowerShell file to rollout all 4 environments. use the script rollout.ps1 . Update the first 4 lines with subscriptionID, resource group, username, password and tenantID for all the environments. Execute the scripts. It will rollout hub,spoke and setup peering among networks.
 
 # Roadmap
-- script to deploy all templates without pipelines.
 - additional services beyond the base templates that may be helpful
-- setup azure pipelines for template validations
+- move vnet peering to ARM templates
