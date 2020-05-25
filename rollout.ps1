@@ -33,19 +33,19 @@ Function Logout(){
 <# rollout nonprod #>
 Login($nonProd)
 New-AzResourceGroupDeployment -ResourceGroupName $nonProd._resourceGroup -TemplateFile nonprod/azureDeploy_nonprod_vnet.json
-$nonProdVnetObject = Get-AzVirtualNetwork -ResourceGroupName $nonProd.resourceGroupname
+$nonProdVnetObject = Get-AzVirtualNetwork -ResourceGroupName $nonProd._resourceGroup
 Logout 
 
 <# rollout preprod #>
 Login($preProd) 
 New-AzResourceGroupDeployment -ResourceGroupName $preProd._resourceGroup -TemplateFile preprod/azureDeploy_preprod_vnet.json
-$preProdVnetObject = Get-AzVirtualNetwork -ResourceGroupName $preProd.resourceGroupname
+$preProdVnetObject = Get-AzVirtualNetwork -ResourceGroupName $preProd._resourceGroup
 Logout
 
 <# rollout prod #>
 Login($prod)
 New-AzResourceGroupDeployment -ResourceGroupName $Prod._resourceGroup -TemplateFile prod/azureDeploy_prod_vnet.json
-$prodVnetObject = Get-AzVirtualNetwork -ResourceGroupName $prod.resourceGroupname
+$prodVnetObject = Get-AzVirtualNetwork -ResourceGroupName $prod._resourceGroup
 Logout
 
 <# rollout hub #>
