@@ -33,19 +33,19 @@ Function Logout(){
 <# rollout nonprod #>
 Login($nonProd)
 New-AzResourceGroupDeployment -ResourceGroupName $nonProd._resourceGroup -TemplateFile nonprod/azureDeploy_nonprod_vnet.json
-$nonProdVnetObject = Get-AzVirtualNetwork -ResourceGroupName $nonProd._resourceGroup
+$nonProdVnetObject = Get-AzVirtualNetwork -ResourceGroupName $nonProd.resourceGroupname
 Logout 
 
 <# rollout preprod #>
 Login($preProd) 
 New-AzResourceGroupDeployment -ResourceGroupName $preProd._resourceGroup -TemplateFile preprod/azureDeploy_preprod_vnet.json
-$preProdVnetObject = Get-AzVirtualNetwork -ResourceGroupName $preProd._resourceGroup
+$preProdVnetObject = Get-AzVirtualNetwork -ResourceGroupName $preProd.resourceGroupname
 Logout
 
 <# rollout prod #>
 Login($prod)
 New-AzResourceGroupDeployment -ResourceGroupName $Prod._resourceGroup -TemplateFile prod/azureDeploy_prod_vnet.json
-$prodVnetObject = Get-AzVirtualNetwork -ResourceGroupName $prod._resourceGroup
+$prodVnetObject = Get-AzVirtualNetwork -ResourceGroupName $prod.resourceGroupname
 Logout
 
 <# rollout hub #>
@@ -53,9 +53,9 @@ Login($hub)
 New-AzResourceGroupDeployment -ResourceGroupName $hub._resourceGroup -TemplateFile hub/azureDeploy_hub.json
 <# peering hub with other networks #>
 $hubVnetObject = Get-AzVirtualNetwork -ResourceGroupName $hub._resourceGroup
-Add-AzVirtualNetworkPeering -Name ($hubVnetObject.name + "/" + $prodVnetObject.name) -VirtualNetwork $hubVnetObject -RemoteVirtualNetworkId $prodVnetObject.Id -AllowGatewayTransit
-Add-AzVirtualNetworkPeering -Name ($hubVnetObject.name + "/" + $preProdVnetObject.name) -VirtualNetwork $hubVnetObject -RemoteVirtualNetworkId $preProdVnetObject.Id -AllowGatewayTransit
-Add-AzVirtualNetworkPeering -Name ($hubVnetObject.name + "/" + $nonProdVnetObject.name) -VirtualNetwork $hubVnetObject -RemoteVirtualNetworkId $nonProdVnetObject.Id -AllowGatewayTransit
+Add-AzVirtualNetworkPeering -Name ($hubVnetObject.name + "to" + $prodVnetObject.name) -VirtualNetwork $hubVnetObject -RemoteVirtualNetworkId $prodVnetObject.Id -AllowGatewayTransit
+Add-AzVirtualNetworkPeering -Name ($hubVnetObject.name + "to" + $preProdVnetObject.name) -VirtualNetwork $hubVnetObject -RemoteVirtualNetworkId $preProdVnetObject.Id -AllowGatewayTransit
+Add-AzVirtualNetworkPeering -Name ($hubVnetObject.name + "to" + $nonProdVnetObject.name) -VirtualNetwork $hubVnetObject -RemoteVirtualNetworkId $nonProdVnetObject.Id -AllowGatewayTransit
 Logout
 
 <# peering other networks with hub#>
