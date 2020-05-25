@@ -32,25 +32,25 @@ Function Logout(){
 
 <# rollout nonprod #>
 Login($nonProd)
-New-AzResourceGroupDeployment -ResourceGroupName $nonProd._resourceGroup -TemplateFile nonprod/azureDeploy_nonprod_vnet.json
+New-AzResourceGroupDeployment -ResourceGroupName $nonProd._resourceGroup -TemplateFile nonprod/azureDeploy_nonprod_vnet.json -verbose
 $nonProdVnetObject = Get-AzVirtualNetwork -ResourceGroupName $nonProd._resourceGroup
 Logout 
 
 <# rollout preprod #>
 Login($preProd) 
-New-AzResourceGroupDeployment -ResourceGroupName $preProd._resourceGroup -TemplateFile preprod/azureDeploy_preprod_vnet.json
+New-AzResourceGroupDeployment -ResourceGroupName $preProd._resourceGroup -TemplateFile preprod/azureDeploy_preprod_vnet.json -verbose
 $preProdVnetObject = Get-AzVirtualNetwork -ResourceGroupName $preProd._resourceGroup
 Logout
 
 <# rollout prod #>
 Login($prod)
-New-AzResourceGroupDeployment -ResourceGroupName $Prod._resourceGroup -TemplateFile prod/azureDeploy_prod_vnet.json
+New-AzResourceGroupDeployment -ResourceGroupName $Prod._resourceGroup -TemplateFile prod/azureDeploy_prod_vnet.json -verbose
 $prodVnetObject = Get-AzVirtualNetwork -ResourceGroupName $prod._resourceGroup
 Logout
 
 <# rollout hub #>
 Login($hub)
-New-AzResourceGroupDeployment -ResourceGroupName $hub._resourceGroup -TemplateFile hub/azureDeploy_hub.json
+New-AzResourceGroupDeployment -ResourceGroupName $hub._resourceGroup -TemplateFile hub/azureDeploy_hub.json -verbose
 <# peering hub with other networks #>
 $hubVnetObject = Get-AzVirtualNetwork -ResourceGroupName $hub._resourceGroup
 Add-AzVirtualNetworkPeering -Name ($hubVnetObject.name + "to" + $prodVnetObject.name) -VirtualNetwork $hubVnetObject -RemoteVirtualNetworkId $prodVnetObject.Id -AllowGatewayTransit
