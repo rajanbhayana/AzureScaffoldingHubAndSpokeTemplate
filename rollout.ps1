@@ -61,15 +61,15 @@ Logout
 <# peering other networks with hub#>
 <# rollout nonprod #>
 Login($nonProd)
-Add-AzVirtualNetworkPeering -Name $hub.name -VirtualNetwork $nonProdVnetObject -RemoteVirtualNetworkId $hubVnetObject.Id -UseRemoteGateways
+Add-AzVirtualNetworkPeering -Name $hubVnetObject.name -VirtualNetwork $nonProdVnetObject -RemoteVirtualNetworkId $hubVnetObject.Id -UseRemoteGateways
 Logout
 
 <# rollout preprod #>
 Login($preProd)
-Add-AzVirtualNetworkPeering -Name $hub.name -VirtualNetwork $preProdVnetObject -RemoteVirtualNetworkId $hubVnetObject.Id -UseRemoteGateways
+Add-AzVirtualNetworkPeering -Name $hubVnetObject.name -VirtualNetwork $preProdVnetObject -RemoteVirtualNetworkId $hubVnetObject.Id -UseRemoteGateways
 Logout
 
 <# rollout prod #>
 Login($prod)
-Add-AzVirtualNetworkPeering -Name $hub.name -VirtualNetwork $prodVnetObject -RemoteVirtualNetworkId $hubVnetObject.Id -UseRemoteGateways
+Add-AzVirtualNetworkPeering -Name $hubVnetObject.name -VirtualNetwork $prodVnetObject -RemoteVirtualNetworkId $hubVnetObject.Id -UseRemoteGateways
 Logout
