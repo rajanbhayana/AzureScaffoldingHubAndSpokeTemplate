@@ -15,12 +15,13 @@ The hub and spoke architecutre is split into the four subscriptions as seen in f
 
 ![Architecture Image](https://teststrgacc01.blob.core.windows.net/scaffolding-images/hubspoke-architecture3.PNG)  
 
--Hub subscription: Central hub subscription that is connected to the on-premises network and spoke subscription (production, pre-production & non-production)
--Production subscription: Contains all resources for running a production environment    
--Pre-production subscription: Contains all resources for running a pre-production environment    
--Non-production subscription: Contains all resources for running a non-production environment with a Developement zone, Test/UAT zone & Sandbox zone.
+- Hub subscription: Central hub subscription that is connected to the on-premises network and spoke subscription (production, pre-production & non-production)
+- Production subscription: Contains all resources for running a production environment    
+- Pre-production subscription: Contains all resources for running a pre-production environment    
+- Non-production subscription: Contains all resources for running a non-production environment with a Developement zone, Test/UAT zone & Sandbox zone.
 
 As part of this scaffolding deployment, the following Azure resources are deployed:
+
 * Virtual networks & Subnets
 * Virtual Network Gateway
 * Network Security Groups
@@ -33,28 +34,34 @@ As part of this scaffolding deployment, the following Azure resources are deploy
 * Recovery Services Vault
 * Public IP Addresses
 * Express Route Circuit
-* Virtual Machines (need to confirm)
+
 
 
 # Deployment of Environment: 
-There are 4 ARM templates here. One each for hub, and prod,nonprod and preprod spokes. There are 2 ways to roll it out. Both need setup for subscriptions, resource group and SPN beforehand. As a team, you will decide if you want to have one subscription, and 4 resource group (one for each environment), or have 4 subscription with one resource group or something inbetween. 
-Once you decide that, for each resource group we need to create SPN and give enough rights on the resource groups to rollout the ARM templates (Contributor should do to start with). SPNs are non interactive logins to azure, that help in automation and scripts rollout. 
-So if for example. you decide to have 4 subscriptions, with one resource group for the four environments, you can go ahead and create SPN and give them rights by following the details here - https://docs.microsoft.com/en-us/powershell/azure/create-azure-service-principal-azureps?view=azps-4.1.0
+There are 4 ARM templates available in this repository. One each for hub, and prod,nonprod and preprod spokes. There are two different methods to roll out these templates in your subscriptions - both methods requires subscriptions, resource group and SPN created prior to commencing the roll out process. You will also have to decide if you want to deploy all 4 environments using 4 different subscriptions, or wants to deploy only 3 environmentsand (e.g. Hub, Prod, nonprod) or follow different approach.
 
-(on how to create subscriptions and resource groups, follow here - https://docs.microsoft.com/en-us/azure/cost-management-billing/manage/ and here - https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/manage-resource-groups-portal )
+Once you've made decision on environments deployment, for each subscription we need to create SPN and give enough rights on the resource groups to rollout the ARM templates (Contributor should do to start with). SPNs are non interactive logins to azure, that help in automation and scripts rollout. For example, you decide to have 4 subscriptions, with one resource group for the four environments, you can go ahead and create SPN and give them rights by following the details here - https://docs.microsoft.com/en-us/powershell/azure/create-azure-service-principal-azureps?view=azps-4.1.0
 
-once you have created SPNs, you should note down the appID (username), Password and TenantId somewhere securely as they would be used ahead. 
+On how to create subscriptions and resource groups, follow here - https://docs.microsoft.com/en-us/azure/cost-management-billing/manage/ and here - https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/manage-resource-groups-portal
 
-Now to deploy these templates there are 2 ways. One is the standard and recommended way to setup azure devops pipelines to deploy resources to the resource groups. 
-Inorder to do that, you need to follow the 2 steps below for each environment. You can also play around a bit and enable continous integration/deployment, which will make sure all the changes are validated and deployed straight away. 
-First, assuming you have a azure devops account (or just create one, its free to start with and enough for what we are doing here) you need to setup a connection to the resource group. On how to do that, follow the instructions here -
-https://azuredevopslabs.com/labs/devopsserver/azureserviceprincipal/
+Once you have created SPNs, you should note down the appID (username), Password and TenantId somewhere securely as they would be used in the next steps. 
+
+## Methods to deploy these templates
+
+1. Setup azure devops pipelines to deploy resources to the resource groups (Recommended): 
+    In order to do that, you need to follow two steps below for each environment. You can also explore other options, such as, enable continous integration/deployment, which will make sure all the changes are validated and deployed straight away.
+
+Assumption: You already have a azure devops account, if not, you need to create a azure devops account which is free to start with and would be sufficient to accomplish this task. You need to setup a connection to the resource group. Please follow these instructions- https://azuredevopslabs.com/labs/devopsserver/azureserviceprincipal/
 
 Once you have made the connections to subscriptions, you can dpeloy the ARM templates to each environment you have a connection for by using the details here - https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/add-template-to-azure-pipelines
-Post this, use the rollout.ps1 script to setup peering. Make sure to comment out lines 35,41,47 and 53. They are for hub and spoke deployment and that has already been done using pipelines above.
 
-If you are not that keen and want to quickly test the scripts, use PowerShell file to rollout all 4 environments. use the script rollout.ps1 . Update the first 4 lines with subscriptionID, resource group, username, password and tenantID for all the environments. Execute the scripts. It will rollout hub,spoke and setup peering among networks.
+Note: Use the rollout.ps1 script to setup peering. Make sure to comment out lines 35, 41, 47 and 53. They are for hub and spoke deployment and that has already been done using pipelines above.
+
+2. Use PowerShell script 'rollout.ps1': If you don't want to use Azure DevOps and wants to test the deployment using script, use PowerShell script "rollout.ps1". Update the first 4 lines with subscriptionID, resource group, username, password and tenantID for all the environments. This script will rollout hub, spokes and setup peering among virtual networks. It will deploy resources under each of the target subscriptions first and then runs virtual network peering AZ PS commands to create the virtual peerings between the hub and spoke vNets.
+
+Parameters: All resource parameters in the ARM template files have been specified following standard conventions and defined in the parameters section at the top of each file. Any parameter values can be modified by updating it's value in this section. Parameter value details are covered in the attached Azure Scaffold_Parameters_v01.docx file which you can use as a reference point.
+
 
 # Roadmap
-- additional services beyond the base templates that may be helpful
-- move vnet peering to ARM templates
+- Additional services beyond the base templates that may be helpful
+- Move vnet peering to ARM templates
