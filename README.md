@@ -10,7 +10,7 @@ hub - [![Build Status](https://dev.azure.com/rajanbhayana/AzureScaffoldingHubAnd
 # AzureScaffoldingTemplate
 
 This Azure Scaffolding template deploys a ready and secure Azure environment ready for deployment of resources. 
-As part of this scaffold environment, a hub and spoke architecture is deployed, as referenced by the architecture diagram in the  "Architecture_v01.vsdx" visio file. The hub subscription, encapsulated by a virtual network, is the sole point of connectivity between the on-premises network and the spoke subscriptions. The spoke subscriptions, also encapsulated as individual virtual networks are peered to the hub via virtual network peering. As such, all ingress and egress network traffic travels via the hub and this isolates the spoke workloads to only have connectivity via the hub. 
+As part of this scaffold environment, a hub and spoke architecture is deployed, as referenced by the architecture diagram below. The hub subscription, encapsulated by a virtual network, is the sole point of connectivity between the on-premises network and the spoke subscriptions. The spoke subscriptions, also encapsulated as individual virtual networks are peered to the hub via virtual network peering. As such, all ingress and egress network traffic travels via the hub and this isolates the spoke workloads to only have connectivity via the hub. 
 The hub and spoke architecutre is split into the four subscriptions as seen in following diagram:
 
 ![Architecture Image](https://teststrgacc01.blob.core.windows.net/scaffolding-images/hubspoke-architecture3.PNG)  
