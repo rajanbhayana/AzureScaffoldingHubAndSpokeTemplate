@@ -11,7 +11,7 @@ hub - [![Build Status](https://dev.azure.com/rajanbhayana/AzureScaffoldingHubAnd
 
 This Azure Scaffolding template deploys a ready and secure Azure environment ready for deployment of resources. 
 As part of this scaffold environment, a hub and spoke architecture is deployed, as referenced by the architecture diagram below. The hub subscription, encapsulated by a virtual network, is the sole point of connectivity between the on-premises network and the spoke subscriptions. The spoke subscriptions, also encapsulated as individual virtual networks are peered to the hub via virtual network peering. As such, all ingress and egress network traffic travels via the hub and this isolates the spoke workloads to only have connectivity via the hub. 
-The hub and spoke architecutre is split into the four subscriptions as seen in following diagram:
+The hub and spoke architecture is split into the four subscriptions as seen in following diagram:
 
 ![Architecture Image](https://teststrgacc01.blob.core.windows.net/scaffolding-images/hubspoke-architecture3.PNG)  
 
@@ -38,7 +38,7 @@ As part of this scaffolding deployment, the following Azure resources are deploy
 
 
 # Deployment of Environment: 
-There are 4 ARM templates available in this repository. One each for hub, and prod,nonprod and preprod spokes. There are two different methods to roll out these templates in your subscriptions - both methods requires subscriptions, resource group and SPN created prior to commencing the roll out process. You will also have to decide if you want to deploy all 4 environments using 4 different subscriptions, or wants to deploy only 3 environmentsand (e.g. Hub, Prod, nonprod) or follow different approach.
+There are 4 ARM templates available in this repository. One each for hub, and prod, nonprod and preprod spokes. There are two different methods to roll out these templates in your subscriptions - both methods requires subscriptions, resource group and SPN created prior to commencing the roll out process. You will also have to decide if you want to deploy all 4 environments using 4 different subscriptions, or wants to deploy only 3 environmentsand (e.g. Hub, Prod, nonprod) or follow different approach.
 
 Once you've made decision on environments deployment, for each subscription we need to create SPN and give enough rights on the resource groups to rollout the ARM templates (Contributor should do to start with). SPNs are non interactive logins to azure, that help in automation and scripts rollout. For example, you decide to have 4 subscriptions, with one resource group for the four environments, you can go ahead and create SPN and give them rights by following the details here - https://docs.microsoft.com/en-us/powershell/azure/create-azure-service-principal-azureps?view=azps-4.1.0
 
