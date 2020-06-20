@@ -32,24 +32,28 @@ Function Logout(){
 
 <# rollout nonprod #>
 Login($nonProd)
+Set-AzContext -Subscription $nonProd._subscriptionId
 New-AzResourceGroupDeployment -ResourceGroupName $nonProd._resourceGroup -TemplateFile nonprod/azureDeploy_nonprod_vnet.json -verbose
 $nonProdVnetObject = Get-AzVirtualNetwork -ResourceGroupName $nonProd._resourceGroup
 Logout 
 
 <# rollout preprod #>
 Login($preProd) 
+Set-AzContext -Subscription $preProd._subscriptionId
 New-AzResourceGroupDeployment -ResourceGroupName $preProd._resourceGroup -TemplateFile preprod/azureDeploy_preprod_vnet.json -verbose
 $preProdVnetObject = Get-AzVirtualNetwork -ResourceGroupName $preProd._resourceGroup
 Logout
 
 <# rollout prod #>
 Login($prod)
+Set-AzContext -Subscription $prod._subscriptionId
 New-AzResourceGroupDeployment -ResourceGroupName $Prod._resourceGroup -TemplateFile prod/azureDeploy_prod_vnet.json -verbose
 $prodVnetObject = Get-AzVirtualNetwork -ResourceGroupName $prod._resourceGroup
 Logout
 
 <# rollout hub #>
 Login($hub)
+Set-AzContext -Subscription $hub._subscriptionId
 New-AzResourceGroupDeployment -ResourceGroupName $hub._resourceGroup -TemplateFile hub/azureDeploy_hub.json -verbose
 <# peering hub with other networks #>
 $hubVnetObject = Get-AzVirtualNetwork -ResourceGroupName $hub._resourceGroup
@@ -61,15 +65,18 @@ Logout
 <# peering other networks with hub#>
 <# rollout nonprod #>
 Login($nonProd)
+Set-AzContext -Subscription $nonProd._subscriptionId
 Add-AzVirtualNetworkPeering -Name $hubVnetObject.name -VirtualNetwork $nonProdVnetObject -RemoteVirtualNetworkId $hubVnetObject.Id -UseRemoteGateways
 Logout
 
 <# rollout preprod #>
 Login($preProd)
+Set-AzContext -Subscription $preProd._subscriptionId
 Add-AzVirtualNetworkPeering -Name $hubVnetObject.name -VirtualNetwork $preProdVnetObject -RemoteVirtualNetworkId $hubVnetObject.Id -UseRemoteGateways
 Logout
 
 <# rollout prod #>
 Login($prod)
+Set-AzContext -Subscription $prod._subscriptionId
 Add-AzVirtualNetworkPeering -Name $hubVnetObject.name -VirtualNetwork $prodVnetObject -RemoteVirtualNetworkId $hubVnetObject.Id -UseRemoteGateways
 Logout
