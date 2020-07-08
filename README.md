@@ -13,7 +13,7 @@ This Azure Scaffolding template deploys a ready and secure Azure environment rea
 As part of this scaffold environment, a hub and spoke architecture is deployed, as referenced by the architecture diagram below. The hub subscription, encapsulated by a virtual network, is the sole point of connectivity between the on-premises network and the spoke subscriptions. The spoke subscriptions, also encapsulated as individual virtual networks are peered to the hub via virtual network peering. As such, all ingress and egress network traffic travels via the hub and this isolates the spoke workloads to only have connectivity via the hub. 
 The hub and spoke architecture is split into the four subscriptions as seen in following diagram:
 
-![Architecture Image](https://teststrgacc01.blob.core.windows.net/scaffolding-images/hubspoke-architecture3.PNG)  
+![Architecture Image](https://github.com/rajanbhayana/AzureScaffoldingHubAndSpokeTemplate/raw/master/image1.png)  
 
 - Hub subscription: Central hub subscription that is connected to the on-premises network and spoke subscription (production, pre-production & non-production)
 - Production subscription: Contains all resources for running a production environment    
